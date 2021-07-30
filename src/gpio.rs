@@ -80,6 +80,16 @@ pub struct Pin<MODE> {
     _mode: PhantomData<MODE>,
 }
 
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub enum Port {
+    PA,
+    PB,
+    PC,
+    PD,
+    PE,
+    PF,
+}
+
 // NOTE(unsafe) The only write acess is to BSRR, which is thread safe
 unsafe impl<MODE> Sync for Pin<MODE> {}
 // NOTE(unsafe) this only enables read access to the same pin from multiple
@@ -195,7 +205,7 @@ macro_rules! gpio {
                 use super::{
                     Alternate, Analog, Floating, GpioExt, Input, OpenDrain, Output,
                     PullDown, PullUp, PushPull, AF0, AF1, AF2, AF3, AF4, AF5, AF6, AF7,
-                    Pin, GpioRegExt,
+                    Pin, GpioRegExt, Port
                 };
 
                 /// GPIO parts
@@ -246,6 +256,24 @@ macro_rules! gpio {
                     /// Pin
                     pub struct $PXi<MODE> {
                         _mode: PhantomData<MODE>,
+                    }
+
+                    impl<MODE> $PXi<MODE> {
+                        /// The port this pin is part of.
+                        pub const PORT: Port = Port::$PXx;
+
+                        /// The pin's number inside its port.
+                        pub const PIN_NUMBER: u8 = $i;
+
+                        /// Returns the port this pin is part of.
+                        pub fn port(&self) -> Port {
+                            Port::$PXx
+                        }
+
+                        /// Returns this pin's number inside its port.
+                        pub fn pin_number(&self) -> u8 {
+                            $i
+                        }
                     }
 
                     impl<MODE> $PXi<MODE> {

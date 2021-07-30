@@ -93,5 +93,14 @@ pub mod watchdog;
 pub mod can;
 
 #[cfg(feature = "device-selected")]
+pub mod exti;
+
+#[cfg(feature = "device-selected")]
+pub mod pwr;
+
+#[cfg(feature = "device-selected")]
+pub mod syscfg;
+
+#[cfg(feature = "device-selected")]
 #[deprecated(since = "0.17.0", note = "please use `pac` instead")]
 pub use pac as stm32;
